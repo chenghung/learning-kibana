@@ -68,6 +68,23 @@ services:
     ports:
      - "1358:1358"
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash-oss:6.8.0
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - esnet
+    ports:
+    - 5044:5044
+    volumes:
+    - ./logstash/conf.d/:/etc/logstash/conf.d
+    - /var/log/nginx:/var/log/nginx
+    command: 
+      > 
+        logstash -f /etc/logstash/conf.d/nginx.conf
+
 volumes:
   es_data:
     driver: local
